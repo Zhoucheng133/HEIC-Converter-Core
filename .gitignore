@@ -1,3 +1,7 @@
 build
 
-test
+core.c
+*.so
+*.pyd
+*.dll
+*.dylib
