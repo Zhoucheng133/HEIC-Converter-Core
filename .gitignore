@@ -7,3 +7,6 @@ core.c
 *.dylib
 
 test
+core.build
+core.dist
+core.onefile-build
