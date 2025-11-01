@@ -5,5 +5,9 @@ core.c
 *.pyd
 *.dll
 *.dylib
+*.bin
 
 test
+core.build
+core.dist
+core.onefile-build
