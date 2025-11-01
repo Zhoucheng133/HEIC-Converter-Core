@@ -1,0 +1,7 @@
+build
+
+core.c
+*.so
+*.pyd
+*.dll
+*.dylib
