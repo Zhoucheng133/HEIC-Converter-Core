@@ -5,3 +5,5 @@ core.c
 *.pyd
 *.dll
 *.dylib
+
+test
