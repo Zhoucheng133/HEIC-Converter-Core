@@ -23,3 +23,7 @@ def convert(input_file, output_dir, quality, use_exif) -> bool:
         return True
     except Exception as _:
         return False
+    
+
+if __name__=="__main__":
+    convert("test/test.HEIC", "test", 80, True)
