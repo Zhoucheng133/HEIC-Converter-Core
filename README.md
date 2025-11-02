@@ -19,4 +19,6 @@ nuitka --standalone --onefile core.py
 --quality <quality> 
 # 不写入EXIF参数 (默认写入)
 --no-exif
+# 覆盖 (默认不覆盖)
+--override
 ```
