@@ -5,26 +5,35 @@ from PIL import Image
 
 register_heif_opener()
 
-def convert(input_file, output_dir, quality=80, use_exif=True) -> bool:
-    heic_path = os.path.join(input_file)
+def convert(input_file, output_dir, quality=80, use_exif=True, override=False) -> bool:
+    # 构建输入输出路径
+    heic_path = os.path.abspath(input_file)
+    os.makedirs(output_dir, exist_ok=True)
     jpeg_path = os.path.join(
         output_dir, os.path.splitext(os.path.basename(input_file))[0] + ".jpg"
     )
+
+    # 检查文件是否已存在
+    if os.path.exists(jpeg_path) and not override:
+        print(f"Skipped: {jpeg_path} already exists (use --override to replace).")
+        return False
 
     try:
         img = Image.open(heic_path)
         exif_bytes = img.info.get("exif")
 
+        save_kwargs = {"quality": quality}
         if exif_bytes and use_exif:
-            img.save(jpeg_path, "JPEG", quality=quality, exif=exif_bytes)
-        else:
-            img.save(jpeg_path, "JPEG", quality=quality)
-        
+            save_kwargs["exif"] = exif_bytes
+
+        img.save(jpeg_path, "JPEG", **save_kwargs)
         print(f"Converted: {heic_path} -> {jpeg_path}")
         return True
+
     except Exception as e:
         print(f"Failed to convert {heic_path}: {e}")
         return False
+
 
 def main():
     parser = argparse.ArgumentParser(description="Convert HEIC images to JPEG")
@@ -32,9 +41,18 @@ def main():
     parser.add_argument("output_dir", help="Directory to save JPEG file")
     parser.add_argument("--quality", type=int, default=80, help="JPEG quality (default: 80)")
     parser.add_argument("--no-exif", action="store_true", help="Do not preserve EXIF data")
+    parser.add_argument("--override", action="store_true", help="Force overwrite existing files")
 
     args = parser.parse_args()
-    convert(args.input_file, args.output_dir, quality=args.quality, use_exif=not args.no_exif)
+
+    convert(
+        input_file=args.input_file,
+        output_dir=args.output_dir,
+        quality=args.quality,
+        use_exif=not args.no_exif,
+        override=args.override
+    )
+
 
 if __name__ == "__main__":
     main()
